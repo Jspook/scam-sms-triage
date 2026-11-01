@@ -1,0 +1,6 @@
+duckdb>=1.0
+pandas>=2.0
+pytest>=8.0
+# Phase 2 (add when you get there):
+# scikit-learn>=1.4
+# streamlit>=1.35
