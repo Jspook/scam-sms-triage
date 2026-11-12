@@ -47,3 +47,27 @@ def test_quality_check_catches_bad_url(tmp_path):
                             cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 1
     assert "url not starting with http" in result.stdout
+
+
+def test_clean_rules(tmp_path):
+    con = duckdb.connect(str(tmp_path / "t.duckdb"))
+    con.execute("CREATE SCHEMA raw")
+    con.execute(
+        "CREATE TABLE raw.reports ("
+        "report_id VARCHAR, reported_at VARCHAR, sender VARCHAR, message_text VARCHAR, "
+        "url VARCHAR, report_count VARCHAR, channel VARCHAR, synthetic_label VARCHAR)"
+    )
+    con.execute("""
+        INSERT INTO raw.reports VALUES
+        ('r1', '2024-01-01 10:00:00', '0811111111', 'normal',    'http://a.com/1', '5', 'sms', 'x'),
+        ('r1', '2024-01-02 10:00:00', '0811111111', 'duplicate', 'http://a.com/1', '5', 'sms', 'x'),
+        ('r2', '2024-01-01 11:00:00', '0822222222', '   ',       'http://b.com/2', '5', 'sms', 'x'),
+        ('r3', '2024-01-01 12:00:00', '0833333333', 'zero count', 'http://c.com/3', '0', 'sms', 'x')
+    """)
+    con.execute((ROOT / "sql/01_clean.sql").read_text(encoding="utf-8"))
+
+    rows = con.execute("SELECT report_id, message_text FROM clean.reports").fetchall()
+    con.close()
+    assert rows == [("r1", "normal")]
+
+

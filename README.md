@@ -32,18 +32,35 @@ This project does not use any internal data from any company. Results on synthet
 ## Architecture
 
 ```
-generate_reports.py ──► data/raw/*.csv
+generate_reports.py ──► data/raw/reports_synthetic.csv   (5,000 reports + 100 duplicated rows)
                               │
                        load_duckdb.py
                               ▼
-        ┌──────────── DuckDB (triage.duckdb) ────────────┐
-        │  raw.reports  →  clean.reports  →  mart.triage │
-        │   (as-is)        (typed, deduped)  (scored)    │
-        └─────────────────────────────────────────────────┘
+        ┌──────────────── DuckDB (triage.duckdb) ──────────────────┐
+        │                                                           │
+        │  raw.reports        5,100 rows   all columns as text,     │
+        │  (as-is)                         nothing removed          │
+        │      │                                                    │
+        │      │  sql/01_clean.sql                                  │
+        │      │    • cast types (timestamp, integer)               │
+        │      │    • dedupe on report_id (-100 rows)               │
+        │      │    • drop blank/NULL message_text                  │
+        │      │    • drop report_count outside 1..1000             │
+        │      │      (-150 report_ids in total)                    │
+        │      ▼                                                    │
+        │  clean.reports      4,850 rows                            │
+        │      │                                                    │
+        │      │  sql/02_mart.sql                                   │
+        │      │    • priority_score = report_count (placeholder)   │
+        │      │    • review_rank = rank() by count desc, time      │
+        │      ▼                                                    │
+        │  mart.triage        4,850 rows ranked for review          │
+        └───────────────────────────────────────────────────────────┘
                               │
-                      quality_checks.py  (fails the run on bad data)
-                              │
-                  Phase 2: model → priority score → ranked table
+                       quality_checks.py
+                         • raw: report problems only (INFO)
+                         • clean: 6 checks must be 0, else exit code 1
+                         • tested in tests/test_pipeline.py
 ```
 
 ## Quick start (Windows PowerShell)
