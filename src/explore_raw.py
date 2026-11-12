@@ -16,4 +16,11 @@ print(f'count report_id: {count_report_id}')
 
 print(len(test))
 print(f"total rows in raw.reports: {total}")
+
+top5 = con.execute(
+    "SELECT report_id, report_count, review_rank FROM mart.triage "
+    "ORDER BY review_rank LIMIT 5"
+).fetchall()
+for row in top5:
+    print(row)
 con.close()

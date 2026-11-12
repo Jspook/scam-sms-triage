@@ -2,8 +2,12 @@
 and reports what the clean layer removed."""
 import argparse
 import sys
+from pathlib import Path
 
 import duckdb
+
+# Resolve relative to the project root so it works from any working directory.
+DEFAULT_DB = Path(__file__).resolve().parent.parent / "data" / "processed" / "triage.duckdb"
 
 # (name, SQL returning the number of offending rows)
 CHECKS = [
@@ -19,13 +23,18 @@ CHECKS = [
      "SELECT count(*) FROM clean.reports WHERE message_text IS NULL"),
     ("clean: report_count outside 1..1000 (must be 0)",
      "SELECT count(*) FROM clean.reports WHERE report_count NOT BETWEEN 1 AND 1000"),
-    # TODO (your turn): add 3 more checks, e.g. future timestamps, URL not starting with http.
+    ("clean: url not starting with http (must be 0)",
+     "SELECT count(*) FROM clean.reports WHERE url IS NOT NULL AND url NOT LIKE 'http%'"),
+    ("clean: reported_at in the future (must be 0)",
+     "SELECT count(*) FROM clean.reports WHERE reported_at > current_timestamp"),
+    ("clean: sender not starting with 08 (must be 0)",
+     "SELECT count(*) FROM clean.reports WHERE sender IS NULL OR sender NOT LIKE '08%'"),
 ]
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--db", default="data/processed/triage.duckdb")
+    ap.add_argument("--db", default=str(DEFAULT_DB))
     args = ap.parse_args()
 
     con = duckdb.connect(args.db, read_only=True)
