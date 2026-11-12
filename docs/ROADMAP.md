@@ -8,11 +8,11 @@ Rule: finish a phase, commit, and update the README before starting the next one
 - [ ] Read through every file in `src/` and `sql/` once; write a one-line comment on anything unclear
 
 ## Phase 1 — Data Engineering (weeks 2–3)
-- [ ] Understand each layer: `raw` (as-is), `clean` (typed + deduped), `mart` (aggregated)
-- [ ] Add 3 more quality checks of your own (e.g. future timestamps, URL scheme, report_count < 1)
-- [ ] Make `quality_checks.py` exit with code 1 when a check fails
-- [ ] Add 2 pytest tests for the cleaning logic
-- [ ] Write an architecture diagram in the README (replace the ASCII one if you like)
+- [x] Understand each layer: `raw` (as-is), `clean` (typed + deduped), `mart` (aggregated)
+- [x] Add 3 more quality checks of your own (e.g. future timestamps, URL scheme, report_count < 1)
+- [x] Make `quality_checks.py` exit with code 1 when a check fails
+- [x] Add 2 pytest tests for the cleaning logic
+- [x] Write an architecture diagram in the README (replace the ASCII one if you like)
 
 ## Phase 2 — Data Science (weeks 4–6)
 - [ ] Download a public phishing URL feed into `data/raw/` (note the source and date in the README)
