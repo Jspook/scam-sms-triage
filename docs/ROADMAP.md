@@ -15,7 +15,7 @@ Rule: finish a phase, commit, and update the README before starting the next one
 - [x] Write an architecture diagram in the README (replace the ASCII one if you like)
 
 ## Phase 2 — Data Science (weeks 4–6)
-- [ ] Download a public phishing URL feed into `data/raw/` (note the source and date in the README)
+- [x] Download a public phishing URL feed into `data/raw/` (note the source and date in the README)
 - [ ] URL features: length, digit count, `-` count, brand keyword present, edit distance to official domains
 - [ ] Baseline: a rule-based flag (brand keyword + domain not official)
 - [ ] Model: TF-IDF + Logistic Regression (scikit-learn)

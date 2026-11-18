@@ -124,10 +124,15 @@ python -m pytest -q
 - เขียนเทสต์ 3 ตัว: pipeline ทั้งเส้น, เช็กคุณภาพจับ URL เสียได้จริง (ใส่แถวเสียตั้งใจแล้วต้องล้ม), และกฎการ clean ทีละกฎด้วยข้อมูลที่รู้คำตอบล่วงหน้า
 - ปรับสถาปัตยกรรมใน README ให้มีตัวเลขจริงกำกับ
 
-**จะทำต่อ**
+## Phase 2 — แหล่งข้อมูล URL
 
-- **Phase 2: Data Science** ดาวน์โหลดฟีด URL ฟิชชิ่งสาธารณะ สร้างฟีเจอร์จาก URL (ความยาว จำนวนตัวเลข คำที่คล้ายแบรนด์) ทำกฎพื้นฐาน แล้วสอนโมเดล TF-IDF + Logistic Regression วัดผลด้วย precision, recall และ confusion matrix กับชุดข้อมูลที่กันไว้ทดสอบ
-- **Phase 3: ผลลัพธ์จัดอันดับ** เปลี่ยนคะแนนความสำคัญจาก `report_count` เฉย ๆ เป็น "ความน่าจะเป็นจากโมเดล × น้ำหนัก `report_count`" แล้วทำหน้าแสดง 20 อันดับแรก
+| ข้อมูล | แหล่ง | label | วันที่โหลด |
+|---|---|---|---|
+| URL หลอกลวง | OpenPhish free feed (https://openphish.com/feed.txt) | 1 | 2026-11-18 |
+| เว็บปกติ | Tranco top 1M (https://tranco-list.eu) สุ่ม 3,000 จาก top 100k | 0 | 2026-11-18 |
+
+ไฟล์ใน `data/raw/` ไม่ขึ้น GitHub ให้โหลดเองด้วยคำสั่งใน PowerShell แล้วรัน `python src/build_url_dataset.py`
+ผลลัพธ์รอบนี้: phish=289, legit=3000 (ตัด path ทิ้ง เหลือแค่ hostname เพื่อกัน data leakage)
 
 ## ผลลัพธ์
 
