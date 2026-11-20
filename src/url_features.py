@@ -20,6 +20,7 @@ def extract_features(host):
         "hyphens": hyphen_count(host),
         "has_brand": int(has_brand(host)),
         "is_official": int(is_official(host)),
+        "brand_distance": brand_distance(host),
     }
 
 import re
@@ -50,3 +51,23 @@ def is_official(host):
             if host == d or host.endswith("." + d):
                 return True
     return False
+
+def levenshtein(a, b):
+    """Minimum number of single-letter edits to turn a into b."""
+    prev = list(range(len(b) + 1))           # turning "" into b[:j] costs j
+    for i, ca in enumerate(a, start=1):
+        cur = [i]                            # turning a[:i] into "" costs i
+        for j, cb in enumerate(b, start=1):
+            cost = 0 if ca == cb else 1
+            cur.append(min(
+                prev[j] + 1,                 # delete
+                cur[j - 1] + 1,              # insert
+                prev[j - 1] + cost,          # replace (or keep)
+            ))
+        prev = cur
+    return prev[-1]
+
+
+def brand_distance(host):
+    """Smallest edit distance between any token and any brand keyword."""
+    return min(levenshtein(t, b) for t in tokens(host) if t for b in BRANDS)
