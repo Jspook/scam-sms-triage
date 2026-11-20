@@ -1,5 +1,5 @@
 """Turn a hostname into numeric features a model can use."""
-
+import re
 
 def hostname_length(host):
     return len(host)
@@ -23,7 +23,6 @@ def extract_features(host):
         "brand_distance": brand_distance(host),
     }
 
-import re
 
 # brand keyword -> its official domains
 BRANDS = {
