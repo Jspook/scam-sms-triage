@@ -2,6 +2,9 @@
 import pandas as pd
 from sklearn.metrics import confusion_matrix, precision_score, recall_score
 from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
 
 from url_features import has_brand, is_official
 
@@ -29,6 +32,18 @@ def main():
     print(f"train={len(train)} test={len(test)} scam_in_test={test['label'].sum()}")
     y_pred = [baseline_predict(h) for h in test["hostname"]]
     report("baseline (rule)", test["label"], y_pred)
+    model = make_pipeline(
+        TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5)),
+        LogisticRegression(max_iter=1000, class_weight="balanced"),
+    )
+    model.fit(train["hostname"], train["label"])   # learn from train only
+    report("TF-IDF + LogReg", test["label"], model.predict(test["hostname"]))
+    
+    test = test.assign(pred=model.predict(test["hostname"]))
+    print("\nFalse positives (legit flagged as scam):")
+    print(test[(test.label == 0) & (test.pred == 1)]["hostname"].to_string())
+    print("\nFalse negatives (scam we missed):")
+    print(test[(test.label == 1) & (test.pred == 0)]["hostname"].to_string())
 
 
 if __name__ == "__main__":
