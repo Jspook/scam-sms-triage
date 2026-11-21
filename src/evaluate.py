@@ -1,4 +1,4 @@
-"""Split the URL dataset, then evaluate the rule baseline on the test part."""
+"""Split the URL dataset, then evaluate the rule baseline and the TF-IDF model on the test part."""
 import pandas as pd
 from sklearn.metrics import confusion_matrix, precision_score, recall_score
 from sklearn.model_selection import train_test_split

@@ -19,7 +19,7 @@ Rule: finish a phase, commit, and update the README before starting the next one
 - [x] URL features: length, digit count, `-` count, brand keyword present, edit distance to official domains
 - [x] Baseline: a rule-based flag (brand keyword + domain not official)
 - [x] Model: TF-IDF + Logistic Regression (scikit-learn)
-- [ ] Evaluate on a held-out split: precision, recall, confusion matrix — report both baseline and model
+- [x] Evaluate on a held-out split: precision, recall, confusion matrix — report both baseline and model
 
 ## Phase 3 — Triage output (weeks 7–8)
 - [ ] Priority score = model probability × report_count weight (write down why)
