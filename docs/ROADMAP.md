@@ -24,7 +24,7 @@ Rule: finish a phase, commit, and update the README before starting the next one
 ## Phase 3 — Triage output (weeks 7–8)
 - [x] Priority score = model probability × report_count weight (write down why)
 - [x] `mart.triage` ranked table; one Streamlit page or notebook that shows the top 20
-- [ ] Final README: results table, limitations, what you would do next
+- [x] Final README: results table, limitations, what you would do next
 
 ## Stretch (after you apply)
 - Airflow or dbt, PyThaiNLP tokenization, a live public feed
