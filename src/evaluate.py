@@ -16,6 +16,14 @@ def baseline_predict(host):
     return int(has_brand(host) and not is_official(host))
 
 
+def make_model():
+    """TF-IDF (char 3-5) + Logistic Regression. Phase 3 (src/triage.py) reuses this same setup."""
+    return make_pipeline(
+        TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5)),
+        LogisticRegression(max_iter=1000, class_weight="balanced"),
+    )
+
+
 def report(name, y_true, y_pred):
     print(f"== {name} ==")
     print("precision:", round(precision_score(y_true, y_pred, zero_division=0), 3))
@@ -32,10 +40,7 @@ def main():
     print(f"train={len(train)} test={len(test)} scam_in_test={test['label'].sum()}")
     y_pred = [baseline_predict(h) for h in test["hostname"]]
     report("baseline (rule)", test["label"], y_pred)
-    model = make_pipeline(
-        TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5)),
-        LogisticRegression(max_iter=1000, class_weight="balanced"),
-    )
+    model = make_model()
     model.fit(train["hostname"], train["label"])   # learn from train only
     report("TF-IDF + LogReg", test["label"], model.predict(test["hostname"]))
     

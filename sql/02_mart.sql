@@ -1,5 +1,6 @@
 -- clean -> mart: placeholder triage table.
--- Phase 0 priority = report_count only. Phase 3 replaces this with model_score * weight.
+-- Phase 0 priority = report_count only (ใช้ได้แม้ยังไม่มีโมเดล).
+-- Phase 3: python src/triage.py เขียนทับตารางนี้ด้วย scam_prob × (1 + log10(report_count)).
 CREATE SCHEMA IF NOT EXISTS mart;
 
 CREATE OR REPLACE TABLE mart.triage AS
